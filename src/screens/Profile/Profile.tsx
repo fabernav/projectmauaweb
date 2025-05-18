@@ -22,7 +22,7 @@ export const Profile = (): JSX.Element => {
               onClick={() => navigate("/home")}
               className="text-white text-2xl [font-family:'League_Spartan',Helvetica] font-semibold"
             >
-              ← Voltar
+              ← 
             </button>
             <h1 className="text-white text-4xl [font-family:'League_Spartan',Helvetica] font-semibold">
               Perfil
@@ -85,12 +85,12 @@ export const Profile = (): JSX.Element => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="ml-2 focus:outline-none"
+                    className="mr-2 ml-2 focus:outline-none"
                   >
                     <img
                       src={showPassword ? openEyes : closeEyes}
                       alt={showPassword ? "Mostrar senha" : "Ocultar senha"}
-                      className="w-6 h-6"
+                      className="w-8 h-8"
                     />
                   </button>
                 </CardContent>

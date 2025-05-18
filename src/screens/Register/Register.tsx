@@ -4,6 +4,9 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 
+// Importando as imagens
+import transporteMaua from "../../assets/images/transporteMaua.png";
+
 export const Register = (): JSX.Element => {
   const navigate = useNavigate();
 
@@ -11,7 +14,14 @@ export const Register = (): JSX.Element => {
     <div className="bg-white flex flex-row justify-center w-full">
       <div className="bg-white overflow-hidden w-[1440px] h-[1024px] relative">
         {/* Blue background on the right side */}
-        <div className="absolute w-[727px] h-[1024px] top-0 left-[727px] bg-[#0152a4]" />
+        <div className="absolute w-[727px] h-[1024px] top-0 left-[727px] bg-[#0152a4]">
+          <img
+            src={transporteMaua}
+            alt="Transporte Mauá"
+            className="w-full h-full object-cover pointer-events-none select-none"
+            style={{ filter: "brightness(0.7)" }}
+          />
+        </div>
 
         {/* Name input */}
         <div className="absolute w-[583px] h-[97px] top-[250px] left-[75px]">

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
+// Importando as imagens
+import transporteMaua from "../../assets/images/transporteMaua.png";
 
 export const LoginAdmin = (): JSX.Element => {
   const navigate = useNavigate();
@@ -11,8 +13,14 @@ export const LoginAdmin = (): JSX.Element => {
     <div className="bg-white flex flex-row justify-center w-full">
       <div className="bg-white overflow-hidden w-[1440px] h-[1024px] relative">
         {/* Blue background on the right side */}
-        <div className="absolute w-[727px] h-[1024px] top-0 left-[727px] bg-[#0152a4]" />
-
+        <div className="absolute w-[727px] h-[1024px] top-0 left-[727px] bg-[#0152a4]">
+          <img
+            src={transporteMaua}
+            alt="Transporte Mauá"
+            className="w-full h-full object-cover pointer-events-none select-none"
+            style={{ filter: "brightness(0.7)" }}
+          />
+        </div>
         {/* Password input */}
         <div className="absolute w-[580px] h-24 top-[476px] left-[77px]">
           <Card className="w-[578px] h-24 bg-[#d9d9d9] rounded-[50px] border-none">

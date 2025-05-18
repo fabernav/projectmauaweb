@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 
+
+
 export const Itinerary = (): JSX.Element => {
   const navigate = useNavigate();
   const [route, setRoute] = useState("");
   const [dayOfWeek, setDayOfWeek] = useState("monday");
   const [description, setDescription] = useState("");
+  const [itinerary, setItinerary] = useState("");
 
   const handleSubmit = () => {
     // Here you would handle the itinerary update submission
@@ -23,7 +26,7 @@ export const Itinerary = (): JSX.Element => {
               onClick={() => navigate("/home")}
               className="text-white text-2xl [font-family:'League_Spartan',Helvetica] font-semibold"
             >
-              ← Voltar
+              ← 
             </button>
             <h1 className="text-white text-4xl [font-family:'League_Spartan',Helvetica] font-semibold">
               Atualizar Itinerário
@@ -40,13 +43,14 @@ export const Itinerary = (): JSX.Element => {
             <label className="block [font-family:'League_Spartan',Helvetica] font-semibold text-2xl mb-2">
               Rota
             </label>
-            <input
-              type="text"
-              value={route}
-              onChange={(e) => setRoute(e.target.value)}
-              placeholder="Digite o nome da rota..."
+            <select
+              value={itinerary}
+              onChange={(e) => setItinerary(e.target.value)}
               className="w-full p-4 rounded-lg bg-white border-none [font-family:'League_Spartan',Helvetica] text-xl focus:ring-2 focus:ring-[#0152a4]"
-            />
+            >
+              <option value="monday">Mauá ➔ Sacomã</option>
+              <option value="tuesday">Sacomã ➔ Mauá</option>
+            </select>
           </div>
 
           {/* Day of week selection */}

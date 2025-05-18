@@ -13,9 +13,9 @@ export const Dashboard = (): JSX.Element => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate("/home")}
-              className="text-white text-2xl [font-family:'League_Spartan',Helvetica] font-semibold"
+              className="text-white text-3xl [font-family:'League_Spartan',Helvetica] font-semibold"
             >
-              ← Voltar
+              ← 
             </button>
             <h1 className="text-white text-4xl [font-family:'League_Spartan',Helvetica] font-semibold">
               Dashboard

@@ -9,6 +9,7 @@ import { Home } from "./screens/Home";
 import { Notifications } from "./screens/Notifications";
 import { Itinerary } from "./screens/Itinerary";
 import { Profile } from "./screens/Profile";
+import { Config } from "./screens/Config";
 
 createRoot(document.getElementById("app") as HTMLElement).render(
   <StrictMode>
@@ -22,6 +23,7 @@ createRoot(document.getElementById("app") as HTMLElement).render(
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/itinerary" element={<Itinerary />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/config" element={<Config />} />
       </Routes>
     </Router>
   </StrictMode>
