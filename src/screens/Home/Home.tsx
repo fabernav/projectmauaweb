@@ -75,7 +75,9 @@ export const Home = (): JSX.Element => {
             <p className="text-gray-600">Gerencie as notificações do sistema</p>
           </div>
 
-          <div className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors">
+          <div 
+          onClick={() => navigate("/help")} 
+          className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors">
             <h2 className="[font-family:'League_Spartan',Helvetica] font-semibold text-2xl mb-2">
               Ajuda
             </h2>
