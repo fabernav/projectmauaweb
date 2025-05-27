@@ -26,17 +26,19 @@ export const Home = (): JSX.Element => {
       <main className="max-w-7xl mx-auto p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Menu cards */}
-          <div 
+          <div
             onClick={() => navigate("/dashboard")}
             className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors"
           >
             <h2 className="[font-family:'League_Spartan',Helvetica] font-semibold text-2xl mb-2">
               Dashboard
             </h2>
-            <p className="text-gray-600">Visualize estatísticas e informações gerais</p>
+            <p className="text-gray-600">
+              Visualize estatísticas e informações gerais
+            </p>
           </div>
 
-          <div 
+          <div
             onClick={() => navigate("/profile")}
             className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors"
           >
@@ -46,7 +48,7 @@ export const Home = (): JSX.Element => {
             <p className="text-gray-600">Gerencie suas informações pessoais</p>
           </div>
 
-          <div 
+          <div
             onClick={() => navigate("/itinerary")}
             className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors"
           >
@@ -57,15 +59,26 @@ export const Home = (): JSX.Element => {
           </div>
 
           <div
-          onClick={() => navigate("/config")} 
-          className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors">
+            onClick={() => navigate("/GerenciarVans")}
+            className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors"
+          >
+            <h2 className="[font-family:'League_Spartan',Helvetica] font-semibold text-2xl mb-2">
+              Gerenciar Vans
+            </h2>
+            <p className="text-gray-600">Gerencie as Vans</p>
+          </div>
+
+          <div
+            onClick={() => navigate("/config")}
+            className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors"
+          >
             <h2 className="[font-family:'League_Spartan',Helvetica] font-semibold text-2xl mb-2">
               Configurações
             </h2>
             <p className="text-gray-600">Ajuste as configurações do sistema</p>
           </div>
 
-          <div 
+          <div
             onClick={() => navigate("/notifications")}
             className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors"
           >
@@ -75,9 +88,10 @@ export const Home = (): JSX.Element => {
             <p className="text-gray-600">Gerencie as notificações do sistema</p>
           </div>
 
-          <div 
-          onClick={() => navigate("/help")} 
-          className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors">
+          <div
+            onClick={() => navigate("/help")}
+            className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors"
+          >
             <h2 className="[font-family:'League_Spartan',Helvetica] font-semibold text-2xl mb-2">
               Ajuda
             </h2>
