@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
-// Importando as imagens
 import transporteMaua from "../../assets/images/transporteMaua.png";
 
 export const LoginAdmin = (): JSX.Element => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = () => {
+    if (email === "123" && password === "123") {
+      navigate("/home");
+    } else {
+      alert("E-mail ou senha incorretos");
+    }
+  };
 
   return (
     <div className="bg-white flex flex-row justify-center w-full">
@@ -21,6 +30,7 @@ export const LoginAdmin = (): JSX.Element => {
             style={{ filter: "brightness(0.7)" }}
           />
         </div>
+
         {/* Password input */}
         <div className="absolute w-[580px] h-24 top-[476px] left-[77px]">
           <Card className="w-[578px] h-24 bg-[#d9d9d9] rounded-[50px] border-none">
@@ -28,6 +38,8 @@ export const LoginAdmin = (): JSX.Element => {
               <Input
                 type="password"
                 placeholder="Senha"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full h-24 bg-transparent border-none rounded-[50px] pl-[43px] [font-family:'League_Spartan',Helvetica] font-semibold text-[#949494] text-[32px] focus-visible:ring-0 focus-visible:ring-offset-0"
               />
             </CardContent>
@@ -36,29 +48,13 @@ export const LoginAdmin = (): JSX.Element => {
 
         {/* Login button */}
         <div className="absolute w-[456px] h-[75px] top-[695px] left-[146px]">
-          <Button 
-            onClick={() => navigate("/home")}
+          <Button
+            onClick={handleLogin}
             className="w-[454px] h-[75px] bg-[#0152a4] rounded-[50px] [font-family:'League_Spartan',Helvetica] font-semibold text-white text-5xl hover:bg-[#0152a4]/90"
           >
             Entrar
           </Button>
         </div>
-
-        {/* Forgot password link */}
-        <button 
-          onClick={() => navigate("/forgot-password")}
-          className="absolute top-[610px] left-[407px] [font-family:'League_Spartan',Helvetica] font-semibold text-black text-[32px] tracking-[0] leading-[normal] whitespace-nowrap hover:underline"
-        >
-          Esqueci a senha
-        </button>
-
-        {/* Register link */}
-        <button 
-          onClick={() => navigate("/register")}
-          className="absolute top-[811px] left-[131px] [font-family:'League_Spartan',Helvetica] font-semibold text-black text-[32px] tracking-[0] leading-[normal] whitespace-nowrap hover:underline"
-        >
-          Não tem conta? Faça seu cadastro
-        </button>
 
         {/* Email input */}
         <div className="absolute w-[583px] h-[97px] top-[337px] left-[75px]">
@@ -67,6 +63,8 @@ export const LoginAdmin = (): JSX.Element => {
               <Input
                 type="email"
                 placeholder="E-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full h-[97px] bg-transparent border-none rounded-[50px] pl-[46px] [font-family:'League_Spartan',Helvetica] font-semibold text-[#949494] text-[32px] focus-visible:ring-0 focus-visible:ring-offset-0"
               />
             </CardContent>
