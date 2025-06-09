@@ -49,7 +49,7 @@ export const Help = (): JSX.Element => {
                 <p className="text-gray-700 text-lg text-center font-bold mt-5">
                     Atendimento suporte → {" "}
                     <span className="bg-[#0152a4] text-white px-3 py-1 rounded">
-                        (11) 99843-4610
+                        (XX) XXXXX-XXXX
                     </span>
                 </p>
                   </div>

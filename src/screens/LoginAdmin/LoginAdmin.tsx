@@ -40,8 +40,7 @@ export const LoginAdmin = (): JSX.Element => {
                 placeholder="Senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-24 bg-transparent border-none rounded-[50px] pl-[43px] [font-family:'League_Spartan',Helvetica] font-semibold text-[#949494] text-[32px] focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
+                className="w-full h-24 bg-transparent border-none rounded-[50px] pl-[43px] [font-family:'League_Spartan',Helvetica] font-semibold text-[#949494] !text-[25px] focus-visible:ring-0 focus-visible:ring-offset-0"              />
             </CardContent>
           </Card>
         </div>
@@ -65,8 +64,7 @@ export const LoginAdmin = (): JSX.Element => {
                 placeholder="E-mail"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-[97px] bg-transparent border-none rounded-[50px] pl-[46px] [font-family:'League_Spartan',Helvetica] font-semibold text-[#949494] text-[32px] focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
+                className="w-full h-[97px] bg-transparent border-none rounded-[50px] pl-[46px] [font-family:'League_Spartan',Helvetica] font-semibold text-[#949494] !text-[25px] focus-visible:ring-0 focus-visible:ring-offset-0"              />
             </CardContent>
           </Card>
         </div>

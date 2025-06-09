@@ -65,19 +65,9 @@ export const Home = (): JSX.Element => {
             <h2 className="[font-family:'League_Spartan',Helvetica] font-semibold text-2xl mb-2">
               Gerenciar Vans
             </h2>
-            <p className="text-gray-600">Gerencie as Vans</p>
+            <p className="text-gray-600">Tenha controle das vans</p>
           </div>
-
-          <div
-            onClick={() => navigate("/config")}
-            className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors"
-          >
-            <h2 className="[font-family:'League_Spartan',Helvetica] font-semibold text-2xl mb-2">
-              Configurações
-            </h2>
-            <p className="text-gray-600">Ajuste as configurações do sistema</p>
-          </div>
-
+          
           <div
             onClick={() => navigate("/notifications")}
             className="bg-[#d9d9d9] rounded-[25px] p-6 cursor-pointer hover:bg-[#c9c9c9] transition-colors"

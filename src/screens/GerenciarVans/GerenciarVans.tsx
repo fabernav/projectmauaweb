@@ -12,8 +12,10 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { AlertCircle, Edit, Plus, Trash2 } from "lucide-react";
 import vanService, { Van } from "../../services/vanService";
+import { useNavigate } from "react-router-dom";
 
 export const GerenciarVans = () => {
+  const navigate = useNavigate();
   const [vans, setVans] = useState<Van[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -142,6 +144,23 @@ export const GerenciarVans = () => {
 
   return (
     <div className="bg-white min-h-screen p-6">
+      {/* Header */}
+      <header className="bg-[#0152a4] p-6 -mx-6 -mt-6 mb-6">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate("/home")}
+              className="text-white text-3xl [font-family:'League_Spartan',Helvetica] font-semibold"
+            >
+              ←
+            </button>
+            <h1 className="text-white text-4xl [font-family:'League_Spartan',Helvetica] font-semibold">
+              Gerenciamento de Vans
+            </h1>
+          </div>
+        </div>
+      </header>
+
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Gerenciar Vans</h1>
