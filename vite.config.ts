@@ -11,4 +11,15 @@ export default defineConfig({
       plugins: [tailwind()],
     },
   },
+  // Adicione a configuração de servidor com proxy
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:8080", // Ajuste para a URL do seu backend
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, "/api"),
+      },
+    },
+  },
 });

@@ -1,0 +1,18 @@
+{
+  "vans": [
+    {
+      "id": 1,
+      "placa": "ABC1234",
+      "tipo": "VAN",
+      "capacidade": 15,
+      "ativo": true
+    },
+    {
+      "id": 2,
+      "placa": "DEF5678",
+      "tipo": "MICRO_ONIBUS",
+      "capacidade": 24,
+      "ativo": true
+    }
+  ]
+}

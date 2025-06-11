@@ -11,7 +11,7 @@ import {
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { AlertCircle, Edit, Plus, Trash2 } from "lucide-react";
-import vanService, { Van } from "../../services/vanService";
+import vanService, { Van, TipoVan } from "../../services/vanService";
 import { useNavigate } from "react-router-dom";
 
 export const GerenciarVans = () => {
@@ -24,7 +24,7 @@ export const GerenciarVans = () => {
 
   // Form states
   const [placa, setPlaca] = useState("");
-  const [tipo, setTipo] = useState("VAN");
+  const [tipo, setTipo] = useState<TipoVan>(TipoVan.VAN);
   const [capacidade, setCapacidade] = useState(15);
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export const GerenciarVans = () => {
 
   const resetForm = () => {
     setPlaca("");
-    setTipo("VAN");
+    setTipo(TipoVan.VAN);
     setCapacidade(15);
   };
 
@@ -76,11 +76,7 @@ export const GerenciarVans = () => {
       toast.error("A placa da van é obrigatória");
       return false;
     }
-    if (!tipo) {
-      toast.error("O tipo de veículo é obrigatório");
-      return false;
-    }
-    if (!capacidade || capacidade <= 0) {
+    if (capacidade <= 0) {
       toast.error("A capacidade deve ser um número positivo");
       return false;
     }
@@ -98,7 +94,7 @@ export const GerenciarVans = () => {
         ativo: true,
       };
 
-      if (isEditMode && currentVan) {
+      if (isEditMode && currentVan && currentVan.id) {
         await vanService.update(currentVan.id, vanData);
         toast.success("Van atualizada com sucesso!");
       } else {
@@ -108,20 +104,31 @@ export const GerenciarVans = () => {
 
       fetchVans();
       handleCloseDialog();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao salvar van:", error);
-      toast.error(
-        isEditMode ? "Erro ao atualizar van" : "Erro ao cadastrar van"
-      );
+      // Tratamento de erros específicos do Spring Boot
+      if (error.response) {
+        if (error.response.status === 400) {
+          toast.error(
+            "Dados inválidos. Verifique os campos e tente novamente."
+          );
+        } else if (error.response.data && error.response.data.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error(
+            isEditMode ? "Erro ao atualizar van" : "Erro ao cadastrar van"
+          );
+        }
+      } else {
+        toast.error("Erro de conexão com o servidor");
+      }
     }
   };
 
-  const toggleVanStatus = async (van: Van) => {
+  const toggleVanStatus = async (id: number) => {
     try {
-      await vanService.update(van.id, { ativo: !van.ativo });
-      toast.success(
-        `Van ${!van.ativo ? "ativada" : "desativada"} com sucesso!`
-      );
+      await vanService.toggleStatus(id);
+      toast.success("Status da van alterado com sucesso!");
       fetchVans();
     } catch (error) {
       console.error("Erro ao alterar status da van:", error);
@@ -136,34 +143,39 @@ export const GerenciarVans = () => {
       await vanService.delete(id);
       toast.success("Van excluída com sucesso!");
       fetchVans();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao excluir van:", error);
-      toast.error("Não foi possível excluir a van");
+      if (error.response && error.response.status === 409) {
+        toast.error(
+          "Esta van não pode ser excluída pois está sendo usada em outros registros."
+        );
+      } else {
+        toast.error("Não foi possível excluir a van");
+      }
     }
   };
 
   return (
-    <div className="bg-white min-h-screen p-6">
+    <div className="bg-white min-h-screen">
       {/* Header */}
-      <header className="bg-[#0152a4] p-6 -mx-6 -mt-6 mb-6">
+      <header className="bg-[#0152a4] p-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate("/home")}
-              className="text-white text-3xl [font-family:'League_Spartan',Helvetica] font-semibold"
+              className="text-white text-2xl [font-family:'League_Spartan',Helvetica] font-semibold"
             >
               ←
             </button>
             <h1 className="text-white text-4xl [font-family:'League_Spartan',Helvetica] font-semibold">
-              Gerenciamento de Vans
+              Gerenciar Vans
             </h1>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Gerenciar Vans</h1>
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="flex justify-end mb-6">
           <Button onClick={() => handleOpenDialog()}>
             <Plus className="mr-2 h-4 w-4" />
             Nova Van
@@ -215,7 +227,7 @@ export const GerenciarVans = () => {
                       {van.placa}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {van.tipo}
+                      {van.tipo === TipoVan.VAN ? "Van" : "Micro-ônibus"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {van.capacidade}
@@ -236,7 +248,7 @@ export const GerenciarVans = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => toggleVanStatus(van)}
+                          onClick={() => van.id && toggleVanStatus(van.id)}
                         >
                           {van.ativo ? "Desativar" : "Ativar"}
                         </Button>
@@ -251,7 +263,7 @@ export const GerenciarVans = () => {
                           variant="outline"
                           size="sm"
                           className="text-red-600"
-                          onClick={() => deleteVan(van.id)}
+                          onClick={() => van.id && deleteVan(van.id)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -292,11 +304,11 @@ export const GerenciarVans = () => {
               <select
                 id="tipo"
                 value={tipo}
-                onChange={(e) => setTipo(e.target.value)}
+                onChange={(e) => setTipo(e.target.value as TipoVan)}
                 className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
-                <option value="VAN">Van</option>
-                <option value="MICRO_ONIBUS">Micro-ônibus</option>
+                <option value={TipoVan.VAN}>Van</option>
+                <option value={TipoVan.MICRO_ONIBUS}>Micro-ônibus</option>
               </select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -307,7 +319,7 @@ export const GerenciarVans = () => {
                 id="capacidade"
                 type="number"
                 value={capacidade}
-                onChange={(e) => setCapacidade(parseInt(e.target.value))}
+                onChange={(e) => setCapacidade(parseInt(e.target.value) || 0)}
                 className="col-span-3"
               />
             </div>

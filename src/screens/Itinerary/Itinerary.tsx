@@ -1,28 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../../components/ui/button";
 import { AlertCircle, Plus, Trash2 } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
+// Interface para a van, como recebida da API /api/vans
 interface VanItem {
   id: number;
   placa: string;
-  tipo: string;
+  tipo: string; // "VAN" ou "MICRO_ONIBUS"
   capacidade: number;
   ativo: boolean;
 }
 
+// Interface para o horário, como recebido da API /api/horarios
 interface HorarioItem {
   id: number;
-  vanId: number;
-  tipoVeiculo: string;
-  saidaDa: string;
+  veiculo: string; // "VAN" ou "MICRO_ONIBUS"
+  placa: string;
   horario: string;
   diaDaSemana: string;
-  placa: string;
+  saidaDa: string;
 }
 
+// O componente agora é exportado diretamente aqui (exportação nomeada)
 export const Itinerary = (): JSX.Element => {
   const navigate = useNavigate();
   const [saidaDe, setSaidaDe] = useState("FACULDADE");
@@ -32,88 +33,104 @@ export const Itinerary = (): JSX.Element => {
   const [horarios, setHorarios] = useState<HorarioItem[]>([]);
   const [vans, setVans] = useState<VanItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingVans, setLoadingVans] = useState(false);
+  const [loadingError, setLoadingError] = useState<string | null>(null);
 
-  const diasDaSemana = {
-    SEGUNDA: "Segunda-feira",
-    TERCA: "Terça-feira",
-    QUARTA: "Quarta-feira",
-    QUINTA: "Quinta-feira",
-    SEXTA: "Sexta-feira",
-    SABADO: "Sábado",
-    DOMINGO: "Domingo",
-  };
-
-  const origens = {
-    FACULDADE: "Mauá → Estação",
-    ESTACAO: "Estação → Mauá",
-  };
-
+  // Efeitos para carregar dados
   useEffect(() => {
     loadHorarios();
-    loadVans();
   }, [saidaDe, diaDaSemana]);
 
+  useEffect(() => {
+    loadVans();
+  }, []);
+
+  // Função para carregar horários
   const loadHorarios = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
         `/api/horarios/origem/${saidaDe}/dia/${diaDaSemana}`
       );
-      // Garantindo que response.data é um array
       const horariosData = Array.isArray(response.data) ? response.data : [];
       setHorarios(horariosData);
-      setLoading(false);
     } catch (error) {
       console.error("Erro ao carregar horários:", error);
       toast.error("Erro ao carregar os horários");
-      setLoading(false);
-      // Definir horarios como um array vazio em caso de erro
       setHorarios([]);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Função para carregar vans
   const loadVans = async () => {
     try {
+      setLoadingVans(true);
+      setLoadingError(null);
       const response = await axios.get("/api/vans?ativo=true");
-      // Garanta que response.data é um array
-      const vansData = Array.isArray(response.data) ? response.data : [];
-      setVans(vansData);
 
-      // Selecionar a primeira van por padrão se houver
-      if (vansData.length > 0 && !vanId) {
-        setVanId(vansData[0].id);
+      const data = Array.isArray(response.data)
+        ? response.data
+        : response.data?.content || [];
+      setVans(data);
+
+      if (data.length > 0 && vanId === null) {
+        setVanId(data[0].id);
       }
     } catch (error) {
       console.error("Erro ao carregar vans:", error);
       toast.error("Erro ao carregar as vans disponíveis");
-      // Inicialize vans como um array vazio em caso de erro
+      setLoadingError("Falha ao carregar vans.");
       setVans([]);
+    } finally {
+      setLoadingVans(false);
     }
   };
 
+  // Função para adicionar horário
   const handleSubmit = async () => {
     if (!vanId) {
       toast.error("Selecione uma van");
       return;
     }
 
+    const selectedVan = vans.find((van) => van.id === vanId);
+    if (!selectedVan) {
+      toast.error(
+        "A van selecionada não foi encontrada. Por favor, recarregue a página."
+      );
+      return;
+    }
+
     try {
-      const newHorario = {
-        vanId,
+      // Objeto corrigido para corresponder ao HorarioDTO do backend
+      const newHorarioPayload = {
+        vanId: selectedVan.id, // Campo crucial que estava faltando
+        tipoVeiculo: selectedVan.tipo,
+        placa: selectedVan.placa,
+        horario: horario,
+        diaDaSemana: diaDaSemana,
         saidaDa: saidaDe,
-        horario,
-        diaDaSemana,
       };
 
-      await axios.post("/api/horarios", newHorario);
+      console.log("Enviando novo horário:", newHorarioPayload);
+      await axios.post("/api/horarios", newHorarioPayload);
+
       toast.success("Horário adicionado com sucesso!");
       loadHorarios();
     } catch (error) {
       console.error("Erro ao adicionar horário:", error);
-      toast.error("Erro ao adicionar o horário");
+      let errorMessage = "Erro ao adicionar o horário";
+      if (axios.isAxiosError(error) && error.response) {
+        // Exibe a mensagem de erro específica vinda do backend, se houver
+        errorMessage = error.response.data || `Erro ${error.response.status}`;
+      }
+      toast.error(errorMessage);
     }
   };
 
+  // Função para excluir horário
   const deleteHorario = async (id: number) => {
     if (window.confirm("Tem certeza que deseja remover este horário?")) {
       try {
@@ -140,7 +157,7 @@ export const Itinerary = (): JSX.Element => {
               ←
             </button>
             <h1 className="text-white text-4xl [font-family:'League_Spartan',Helvetica] font-semibold">
-              Gerenciar Horários
+              Itinerário
             </h1>
           </div>
         </div>
@@ -149,7 +166,7 @@ export const Itinerary = (): JSX.Element => {
       {/* Main content */}
       <main className="max-w-7xl mx-auto p-6">
         <div className="bg-[#d9d9d9] rounded-[25px] p-8">
-          {/* Saída de input */}
+          {/* Form controls */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block [font-family:'League_Spartan',Helvetica] font-semibold text-2xl mb-2">
@@ -165,7 +182,6 @@ export const Itinerary = (): JSX.Element => {
               </select>
             </div>
 
-            {/* Dia da semana selection */}
             <div>
               <label className="block [font-family:'League_Spartan',Helvetica] font-semibold text-2xl mb-2">
                 Dia da Semana
@@ -221,33 +237,27 @@ export const Itinerary = (): JSX.Element => {
                     </tr>
                   </thead>
                   <tbody>
-                    {/* Verificar se horarios é um array antes de mapear */}
-                    {Array.isArray(horarios) &&
-                      horarios.map((item) => (
-                        <tr key={item.id} className="border-b border-slate-100">
-                          <td className="py-3 px-4 [font-family:'League_Spartan',Helvetica]">
-                            {item.tipoVeiculo === "VAN"
-                              ? "Van"
-                              : "Micro-ônibus"}
-                          </td>
-                          <td className="py-3 px-4 [font-family:'League_Spartan',Helvetica]">
-                            {item.placa}
-                          </td>
-                          <td className="py-3 px-4 [font-family:'League_Spartan',Helvetica]">
-                            {item.horario}
-                          </td>
-                          <td className="py-3 px-4 text-center">
-                            <Button
-                              onClick={() => deleteHorario(item.id)}
-                              variant="outline"
-                              size="sm"
-                              className="text-red-500 hover:text-red-700"
-                            >
-                              <Trash2 className="h-5 w-5" />
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
+                    {horarios.map((item) => (
+                      <tr key={item.id} className="border-b border-slate-100">
+                        <td className="py-3 px-4 [font-family:'League_Spartan',Helvetica]">
+                          {item.veiculo === "VAN" ? "Van" : "Micro-ônibus"}
+                        </td>
+                        <td className="py-3 px-4 [font-family:'League_Spartan',Helvetica]">
+                          {item.placa}
+                        </td>
+                        <td className="py-3 px-4 [font-family:'League_Spartan',Helvetica]">
+                          {item.horario.substring(0, 5)}
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <button
+                            onClick={() => deleteHorario(item.id)}
+                            className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-full"
+                          >
+                            <Trash2 className="h-5 w-5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -265,25 +275,40 @@ export const Itinerary = (): JSX.Element => {
                 <label className="block [font-family:'League_Spartan',Helvetica] font-semibold text-lg mb-2">
                   Selecionar Van
                 </label>
-                <select
-                  value={vanId || ""}
-                  onChange={(e) => setVanId(parseInt(e.target.value))}
-                  className="w-full p-3 rounded-lg bg-slate-50 border-slate-200 [font-family:'League_Spartan',Helvetica] text-lg"
-                >
-                  <option value="">Selecione uma van</option>
-                  {/* Verificar se vans é um array antes de mapear */}
-                  {Array.isArray(vans) && vans.length > 0 ? (
-                    vans.map((van) => (
-                      <option key={van.id} value={van.id}>
-                        {van.placa} -{" "}
-                        {van.tipo === "VAN" ? "Van" : "Micro-ônibus"}(
-                        {van.capacidade} lugares)
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Nenhuma van disponível</option>
-                  )}
-                </select>
+                {loadingVans ? (
+                  <div className="w-full p-3 rounded-lg bg-slate-50 border-slate-200 flex items-center justify-center">
+                    <p className="text-slate-500">Carregando vans...</p>
+                  </div>
+                ) : (
+                  <>
+                    <select
+                      value={vanId || ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setVanId(value ? parseInt(value, 10) : null);
+                      }}
+                      className="w-full p-3 rounded-lg bg-slate-50 border-slate-200 [font-family:'League_Spartan',Helvetica] text-lg"
+                    >
+                      <option value="">Selecione uma van</option>
+                      {vans.length > 0 ? (
+                        vans.map((van) => (
+                          <option key={van.id} value={van.id}>
+                            {van.placa} -{" "}
+                            {van.tipo === "VAN" ? "Van" : "Micro-ônibus"} (
+                            {van.capacidade} lugares)
+                          </option>
+                        ))
+                      ) : (
+                        <option disabled>Nenhuma van disponível</option>
+                      )}
+                    </select>
+                    {loadingError && (
+                      <div className="text-red-500 mt-2 text-sm">
+                        {loadingError}
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
 
               <div>
@@ -299,13 +324,14 @@ export const Itinerary = (): JSX.Element => {
               </div>
             </div>
 
-            <Button
+            <button
               onClick={handleSubmit}
-              className="mt-6 bg-[#0152a4] text-white hover:bg-[#0143ad] [font-family:'League_Spartan',Helvetica] font-semibold text-xl py-3 px-6 rounded-[50px] flex items-center gap-2"
+              disabled={!vanId || loadingVans}
+              className="mt-6 bg-[#0152a4] text-white hover:bg-[#0143ad] [font-family:'League_Spartan',Helvetica] font-semibold text-xl py-3 px-6 rounded-[50px] flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Plus className="h-5 w-5" />
               Adicionar Horário
-            </Button>
+            </button>
           </div>
         </div>
       </main>

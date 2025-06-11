@@ -1,16 +1,35 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../../components/ui/button";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 export const Notifications = (): JSX.Element => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [type, setType] = useState("warning");
+  const [type, setType] = useState("warning"); // "warning" ou "alert"
 
-  const handleSubmit = () => {
-    // Here you would handle the notification submission
-    console.log({ title, description, type });
+  const handleSubmit = async () => {
+    if (!title || !description) {
+      toast.error("O título e a descrição são obrigatórios!");
+      return;
+    }
+
+    const notificationPayload = { title, description, type };
+
+    try {
+      // Envia a notificação para o novo endpoint no backend
+      await axios.post("/api/notifications/send", notificationPayload);
+      toast.success("Notificação enviada com sucesso!");
+
+      // Limpa o formulário após o envio
+      setTitle("");
+      setDescription("");
+      setType("warning");
+    } catch (error) {
+      console.error("Erro ao enviar notificação:", error);
+      toast.error("Falha ao enviar a notificação.");
+    }
   };
 
   return (
@@ -23,7 +42,7 @@ export const Notifications = (): JSX.Element => {
               onClick={() => navigate("/home")}
               className="text-white text-2xl [font-family:'League_Spartan',Helvetica] font-semibold"
             >
-              ← 
+              ←
             </button>
             <h1 className="text-white text-4xl [font-family:'League_Spartan',Helvetica] font-semibold">
               Nova Notificação
@@ -76,7 +95,7 @@ export const Notifications = (): JSX.Element => {
                 onClick={() => setType("warning")}
                 className={`px-6 py-3 rounded-lg [font-family:'League_Spartan',Helvetica] font-semibold text-xl ${
                   type === "warning"
-                    ? "bg-yellow-500 text-white"
+                    ? "bg-yellow-500 text-white shadow-lg"
                     : "bg-white text-yellow-500"
                 }`}
               >
@@ -86,7 +105,7 @@ export const Notifications = (): JSX.Element => {
                 onClick={() => setType("alert")}
                 className={`px-6 py-3 rounded-lg [font-family:'League_Spartan',Helvetica] font-semibold text-xl ${
                   type === "alert"
-                    ? "bg-red-500 text-white"
+                    ? "bg-red-500 text-white shadow-lg"
                     : "bg-white text-red-500"
                 }`}
               >
@@ -95,12 +114,12 @@ export const Notifications = (): JSX.Element => {
             </div>
           </div>
 
-          <Button
+          <button
             onClick={handleSubmit}
             className="w-full bg-[#0152a4] text-white hover:bg-[#0152a4]/90 [font-family:'League_Spartan',Helvetica] font-semibold text-2xl py-4 rounded-[50px]"
           >
             Enviar Notificação
-          </Button>
+          </button>
         </div>
       </main>
     </div>

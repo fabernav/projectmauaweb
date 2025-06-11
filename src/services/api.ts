@@ -1,23 +1,35 @@
+// src/services/api.ts
 import axios from "axios";
 
-// Crie uma instância do axios com a URL base da sua API
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/api",
-  // Você pode adicionar headers padrão aqui, como tokens de autenticação
+  baseURL: "http://localhost:8080/api",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Interceptor para tratamento global de erros
+// Interceptador para adicionar token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Interceptador para tratar erros de autenticação
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Você pode adicionar lógica para lidar com diferentes tipos de erros aqui
-    const message =
-      error.response?.data?.message ||
-      "Ocorreu um erro na comunicação com o servidor";
-    console.error("API Error:", message);
+    if (error.response && error.response.status === 401) {
+      // Token expirado ou inválido
+      localStorage.removeItem("token");
+      // Redirecionar para login
+      window.location.href = "/login";
+    }
     return Promise.reject(error);
   }
 );
