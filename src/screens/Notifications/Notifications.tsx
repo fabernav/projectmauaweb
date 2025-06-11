@@ -18,11 +18,9 @@ export const Notifications = (): JSX.Element => {
     const notificationPayload = { title, description, type };
 
     try {
-      // Envia a notificação para o novo endpoint no backend
       await axios.post("/api/notifications/send", notificationPayload);
       toast.success("Notificação enviada com sucesso!");
 
-      // Limpa o formulário após o envio
       setTitle("");
       setDescription("");
       setType("warning");

@@ -4,7 +4,6 @@ import { AlertCircle, Plus, Trash2 } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
-// Interface para a van, como recebida da API /api/vans
 interface VanItem {
   id: number;
   placa: string;
@@ -13,7 +12,6 @@ interface VanItem {
   ativo: boolean;
 }
 
-// Interface para o horário, como recebido da API /api/horarios
 interface HorarioItem {
   id: number;
   veiculo: string; // "VAN" ou "MICRO_ONIBUS"
@@ -23,7 +21,6 @@ interface HorarioItem {
   saidaDa: string;
 }
 
-// O componente agora é exportado diretamente aqui (exportação nomeada)
 export const Itinerary = (): JSX.Element => {
   const navigate = useNavigate();
   const [saidaDe, setSaidaDe] = useState("FACULDADE");
@@ -36,7 +33,6 @@ export const Itinerary = (): JSX.Element => {
   const [loadingVans, setLoadingVans] = useState(false);
   const [loadingError, setLoadingError] = useState<string | null>(null);
 
-  // Efeitos para carregar dados
   useEffect(() => {
     loadHorarios();
   }, [saidaDe, diaDaSemana]);
@@ -45,7 +41,6 @@ export const Itinerary = (): JSX.Element => {
     loadVans();
   }, []);
 
-  // Função para carregar horários
   const loadHorarios = async () => {
     try {
       setLoading(true);
@@ -63,7 +58,6 @@ export const Itinerary = (): JSX.Element => {
     }
   };
 
-  // Função para carregar vans
   const loadVans = async () => {
     try {
       setLoadingVans(true);
@@ -88,7 +82,6 @@ export const Itinerary = (): JSX.Element => {
     }
   };
 
-  // Função para adicionar horário
   const handleSubmit = async () => {
     if (!vanId) {
       toast.error("Selecione uma van");
@@ -104,9 +97,8 @@ export const Itinerary = (): JSX.Element => {
     }
 
     try {
-      // Objeto corrigido para corresponder ao HorarioDTO do backend
       const newHorarioPayload = {
-        vanId: selectedVan.id, // Campo crucial que estava faltando
+        vanId: selectedVan.id,
         tipoVeiculo: selectedVan.tipo,
         placa: selectedVan.placa,
         horario: horario,
@@ -123,14 +115,12 @@ export const Itinerary = (): JSX.Element => {
       console.error("Erro ao adicionar horário:", error);
       let errorMessage = "Erro ao adicionar o horário";
       if (axios.isAxiosError(error) && error.response) {
-        // Exibe a mensagem de erro específica vinda do backend, se houver
         errorMessage = error.response.data || `Erro ${error.response.status}`;
       }
       toast.error(errorMessage);
     }
   };
 
-  // Função para excluir horário
   const deleteHorario = async (id: number) => {
     if (window.confirm("Tem certeza que deseja remover este horário?")) {
       try {

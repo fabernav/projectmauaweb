@@ -22,7 +22,6 @@ export const GerenciarVans = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentVan, setCurrentVan] = useState<Van | null>(null);
 
-  // Form states
   const [placa, setPlaca] = useState("");
   const [tipo, setTipo] = useState<TipoVan>(TipoVan.VAN);
   const [capacidade, setCapacidade] = useState(15);
@@ -106,7 +105,6 @@ export const GerenciarVans = () => {
       handleCloseDialog();
     } catch (error: any) {
       console.error("Erro ao salvar van:", error);
-      // Tratamento de erros específicos do Spring Boot
       if (error.response) {
         if (error.response.status === 400) {
           toast.error(
@@ -157,7 +155,6 @@ export const GerenciarVans = () => {
 
   return (
     <div className="bg-white min-h-screen">
-      {/* Header */}
       <header className="bg-[#0152a4] p-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">

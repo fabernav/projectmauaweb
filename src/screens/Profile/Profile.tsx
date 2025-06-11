@@ -22,7 +22,7 @@ export const Profile = (): JSX.Element => {
               onClick={() => navigate("/home")}
               className="text-white text-2xl [font-family:'League_Spartan',Helvetica] font-semibold"
             >
-              ← 
+              ←
             </button>
             <h1 className="text-white text-4xl [font-family:'League_Spartan',Helvetica] font-semibold">
               Perfil
